@@ -1,0 +1,21 @@
+{
+    "name": "frangeris/biller",
+    "description": "Stripe subscription billing services for PhalconPHP",
+    "keywords": ["phalcon", "stripe", "billing", "subscriptions", "customers"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frangeris Peguero",
+            "email": "frangeris.20@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "stripe/stripe-php": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Biller\\": "src/Biller/"
+        }
+    }
+}
