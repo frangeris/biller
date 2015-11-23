@@ -54,8 +54,15 @@ trait IsCustomer
             throw new \Exception('User must have an email');
         }
 
-        // customer data
+        // customer paramters
         $args = ['source' => $token, 'email' => $this->email];
+
+        // trial
+        if (isset($this->trial_ends)) {
+            $args['trial_end'] = $this->trial_end;
+        }
+
+        // customer metadata
         foreach ($metadata as $property) {
             if (isset($this->$property)) {
                 $args['metadata'][$property] = $this->$property;
@@ -64,6 +71,7 @@ trait IsCustomer
 
         $stripe_customer = \Stripe\Customer::create($args);
 
+        // save new customer
         $customer = new Customer();
         $customer->user_id = $this->{$this->_id};
         $customer->stripe_id = $stripe_customer->id;
@@ -127,27 +135,57 @@ trait IsCustomer
         return Handler::instance($this, $subscription);
     }
 
+    /**
+     * Set days to trial in customer creation.
+     *
+     * @param int $days Days of trial period
+     *
+     * @return Biller\Behavior\IsCustomer
+     */
+    public function trial($days = 14)
+    {
+        $this->trial_end = \Carbon\Carbon::now()->addDays($days)->timestamp;
+
+        return $this;
+    }
+
+    /**
+     * Verify is the user is subscribed
+     *
+     * @return bool Boolean status of subscription
+     */
     public function subscribed()
     {
+        return !in_array($this->subscription()->current->status, ['canceled', 'unpaid']);
     }
 
-    public function cancelled()
+    /**
+     * Verify is the user has canceled the subscription
+     *
+     * @return bool Boolean status of subscription
+     */
+    public function canceled()
     {
+        return 'canceled' == $this->subscription()->current->status;
     }
 
-    public function onGracePeriod()
-    {
-    }
-
-    public function everSubscribed()
-    {
-    }
-
+    /**
+     * Verify is the user is on the plan
+     *
+     * @return bool Boolean status of plan
+     */
     public function onPlan($plan)
     {
+        return $plan == $this->subscription()->current->plan;
     }
 
+    /**
+     * Verify is the user is on trial period
+     *
+     * @return bool Boolean status of plan
+     */
     public function onTrial()
     {
+        return 'trialing' == $this->subscription()->current->status;
     }
 }
