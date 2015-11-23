@@ -2,9 +2,7 @@
 
 namespace Biller\Entity;
 
-use Phalcon\Mvc\Model;
-
-class Subscription extends Model
+class Subscription extends \Phalcon\Mvc\Model
 {
 	/**
 	 * @var int
@@ -24,7 +22,12 @@ class Subscription extends Model
 	/**
 	 * @var string
 	 */
-	public $token;
+	public $plan;
+
+	/**
+	 * @var string
+	 */
+	public $status;
 
 	/**
 	 * @var string
