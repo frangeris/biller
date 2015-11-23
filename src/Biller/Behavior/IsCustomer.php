@@ -3,6 +3,8 @@
 namespace Biller\Behavior;
 
 use Biller\Entity\Customer;
+use Biller\Entity\Subscription;
+use Biller\Handler\Subscription as Handler;
 
 trait IsCustomer
 {
@@ -23,13 +25,12 @@ trait IsCustomer
     /**
      * Create a stripe customer using data of user.
      *
-     * @package Customers
      * @param string $token    Token returned by stripe
      * @param array  $metadata Stripe metadata
      *
      * @return Stripe\Customer Object customer from stripe
      */
-    public function toCustomer($token, $metadata = [])
+    public function toCustomer($token, $plan = null, $metadata = [])
     {
         $config = \Phalcon\DI::getDefault()->getConfig();
 
@@ -63,12 +64,16 @@ trait IsCustomer
 
         $stripe_customer = \Stripe\Customer::create($args);
 
-        // save the customer for future charges
         $customer = new Customer();
         $customer->user_id = $this->{$this->_id};
         $customer->stripe_id = $stripe_customer->id;
         $customer->token = $token;
         $customer->save();
+        // $customer->merge($stripe_customer);
+
+        // save the customer for future charges
+        $session = \Phalcon\DI::getDefault()->getSession();
+        $session->set('biller.customer', $stripe_customer);
 
         return $stripe_customer;
     }
@@ -76,25 +81,73 @@ trait IsCustomer
     /**
      * Get the customer with stripe attributes.
      *
-     * @package Customers
      * @param string $attribute Attribute of the customer (stripe)
      *
      * @return Biller\Entity\Customer Customer object
      */
     public function customer($attribute = null)
     {
+        $session = \Phalcon\DI::getDefault()->getSession();
+        if ($session->has('biller.customer')) {
+            return $session->get('biller.customer');
+        }
+
         $customer = Customer::findFirst(["user_id = '{$this->id}'"]);
-        $customer_s = \Stripe\Customer::retrieve($customer->stripe_id);
+        $stripe_customer = \Stripe\Customer::retrieve($customer->stripe_id);
+        // $customer->merge($stripe_customer);
 
-        // merge stripe customer attibutes into entity
-        foreach ($customer_s->keys() as $key) {
-            $customer->$key = $customer_s->$key;
+        // specific attibute
+        if (!is_null($attribute) && isset($stripe_customer->$attribute)) {
+            return $stripe_customer->$attribute;
+        } elseif (!is_null($attribute)) {
+            throw new \Exception(sprintf('Accesing to undefined property "%s" of customer', $attribute));
         }
 
-        if (!is_null($attribute)) {
-            return $customer->$attribute;
+        // cache
+        $session->set('biller.customer', $stripe_customer);
+
+        return $stripe_customer;
+    }
+
+    /**
+     * Interact with subcription handler.
+     *
+     * @return Biller\Handler\Subscription Instance of handler
+     */
+    public function subscription()
+    {
+        $session = \Phalcon\DI::getDefault()->getSession();
+        if ($session->has('biller.subs')) {
+            $subscription = $session->get('biller.subs');
+        } else {
+            // get the current subscription
+            $subscription = Subscription::findFirst(["user_id = '{$this->{$this->_id}}'"]);
         }
 
-        return $customer;
+        return Handler::instance($this, $subscription);
+    }
+
+    public function subscribed()
+    {
+    }
+
+    public function cancelled()
+    {
+    }
+
+    public function onGracePeriod()
+    {
+    }
+
+    public function everSubscribed()
+    {
+    }
+
+    public function onPlan($plan)
+    {
+    }
+
+    public function onTrial()
+    {
     }
 }

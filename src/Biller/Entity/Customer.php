@@ -53,4 +53,18 @@ class Customer extends \Phalcon\Mvc\Model
     {
         $this->created_at = date('Y-m-d H:i:s');
     }
+
+    /**
+     * Merge attributes of stripe in current customer
+     *
+     * @param  \Stripe\Customer $customer Customer instance from stripe
+     * @return void
+     */
+    public function merge(\Stripe\Customer $customer)
+    {
+        // merge stripe customer attibutes into entity
+        foreach ($customer->keys() as $key) {
+            $this->$key = $customer->$key;
+        }
+    }
 }
