@@ -49,16 +49,16 @@ class Subscription extends \Phalcon\Mvc\User\Component
         $customer = $this->user->customer();
 
         $args = [
-        	'plan' => $plan,
-        	'trial_end' => (isset($this->trial_end)) ? $this->trial_end : null,
-        	'coupon' => (isset($this->coupon)) ? $this->coupon : null
+            'plan' => $plan,
+            'trial_end' => (isset($this->trial_end)) ? $this->trial_end : null,
+            'coupon' => (isset($this->coupon)) ? $this->coupon : null,
         ];
 
         if (isset($this->current)) {
             // user already have a previous subscription
             $stripe_subs = $customer->subscriptions->retrieve($this->current->stripe_id);
             foreach ($args as $key => $value) {
-            	$stripe_subs->$key = $value;
+                $stripe_subs->$key = $value;
             }
 
             // update stripe and db
@@ -87,18 +87,26 @@ class Subscription extends \Phalcon\Mvc\User\Component
     }
 
     /**
-     * Cancel a subcription
+     * Cancel a subcription.
      *
-     * @param  bool|boolean $ends_at Delay the cancellation of the subscription until the end of the current period.
+     * @param bool $ends_at Delay the cancellation of the subscription until the end of the current period.
+     *
      * @return Stripe\Subscription Stripe canceled subscription object
      */
     public function cancel($ends_at = false)
     {
-    	$customer = $this->user->customer();
+        $customer = $this->user->customer();
 
-    	return $customer->subscriptions->retrieve($this->current->stripe_id)->cancel($ends_at);
+        return $customer->subscriptions->retrieve($this->current->stripe_id)->cancel($ends_at);
     }
 
+    /**
+     * Set days for trial.
+     *
+     * @param int $days Days until trial ends
+     *
+     * @return Biller\Handler\Subscription Handler of subscription
+     */
     public function trial($days)
     {
         $this->trial_end = \Carbon\Carbon::now()->addDays($days)->timestamp;
@@ -106,17 +114,34 @@ class Subscription extends \Phalcon\Mvc\User\Component
         return $this;
     }
 
-    public function withCoupon($code)
+    /**
+     * Apply a coupon to charge.
+     *
+     * @param stirng $code Code of coupon to apply
+     *
+     * @return Biller\Handler\Subscription Handler of subscription
+     */
+    public function apply($code)
     {
         $this->coupon = $code;
 
         return $this;
     }
 
+    /**
+     * Increment the quantity of subscription.
+     *
+     * @param int $quantity Quantity to add to subscription
+     */
     public function increase($quantity = null)
     {
     }
 
+    /**
+     * Decrement the quantity of subscription.
+     *
+     * @param int $quantity Quantity to subtract to subscription
+     */
     public function decrease($quantity = null)
     {
     }
