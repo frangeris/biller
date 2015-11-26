@@ -35,7 +35,7 @@ The next step is to start with the implementation directly in code, before make 
 
 Before start the **Gateway** we need to add the configuration of `Biller` in the configuration array of the app, with the next structure:
 
-#### Add biller configuration to config file, `app/config.php`:
+#### Add biller configuration to config file:
 
 ```php
 return new \Phalcon\Config([
@@ -58,7 +58,6 @@ return new \Phalcon\Config([
 ####Start the gateway using `Gateway::me()`:
 
 The **Gateway** receive as parameter an object `\Phalcon\Config` so we spend the configuration of the application previously loaded; use method `me()` for indicate who we are:
-
 
 ```php
 /*
