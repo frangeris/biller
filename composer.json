@@ -1,5 +1,6 @@
 {
     "name": "frangeris/biller",
+    "type": "library",
     "description": "Stripe subscription billing services for PhalconPHP",
     "keywords": ["phalcon", "stripe", "billing", "subscriptions", "customers"],
     "license": "MIT",
@@ -14,9 +15,17 @@
         "stripe/stripe-php": "~3.0",
         "nesbot/carbon": "^1.21"
     },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0"
+    },
     "autoload": {
         "psr-4": {
             "Biller\\": "src/Biller/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     }
 }
