@@ -156,6 +156,10 @@ trait IsCustomer
      */
     public function subscribed()
     {
+        if (!isset($this->subscription()->current)) {
+            return false;
+        }
+
         return !in_array($this->subscription()->current->status, ['canceled', 'unpaid']);
     }
 
@@ -166,6 +170,10 @@ trait IsCustomer
      */
     public function canceled()
     {
+        if (!isset($this->subscription()->current)) {
+            return false;
+        }
+
         return 'canceled' == $this->subscription()->current->status;
     }
 
@@ -176,6 +184,10 @@ trait IsCustomer
      */
     public function onPlan($plan)
     {
+        if (!isset($this->subscription()->current)) {
+            return false;
+        }
+
         return $plan == $this->subscription()->current->plan;
     }
 
@@ -186,6 +198,10 @@ trait IsCustomer
      */
     public function onTrial()
     {
+        if (!isset($this->subscription()->current)) {
+            return false;
+        }
+
         return 'trialing' == $this->subscription()->current->status;
     }
 }

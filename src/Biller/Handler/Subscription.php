@@ -50,15 +50,24 @@ class Subscription extends \Phalcon\Mvc\User\Component
 
         $args = [
             'plan' => $plan,
-            'trial_end' => (isset($this->trial_end)) ? $this->trial_end : null,
-            'coupon' => (isset($this->coupon)) ? $this->coupon : null,
         ];
 
+        // trial end
+        if (isset($this->trial_end)) {
+            $args['trial_end'] = $this->trial_end;
+        }
+
+        // coupon to use
+        if (isset($this->coupon)) {
+            $args['coupon'] = $this->coupon;
+        }
+
         if (isset($this->current)) {
+
             // user already have a previous subscription
             $stripe_subs = $customer->subscriptions->retrieve($this->current->stripe_id);
             foreach ($args as $key => $value) {
-                $stripe_subs->$key = $value;
+                $stripe_subs->{$key} = $value;
             }
 
             // update stripe and db
@@ -89,15 +98,19 @@ class Subscription extends \Phalcon\Mvc\User\Component
     /**
      * Cancel a subcription.
      *
-     * @param bool $ends_at Delay the cancellation of the subscription until the end of the current period.
+     * @param bool $at_period_end Delay the cancellation of the subscription until the end of the current period.
      *
      * @return Stripe\Subscription Stripe canceled subscription object
      */
-    public function cancel($ends_at = false)
+    public function cancel($at_period_end = false)
     {
         $customer = $this->user->customer();
 
-        return $customer->subscriptions->retrieve($this->current->stripe_id)->cancel($ends_at);
+        // remove from db
+        $this->current->delete();
+
+        // TODO: stripe is giving "Stripe\Error\Api: You must pass an array as the first argument to Stripe API method calls." when passing $at_period_end to cancel()
+        return $customer->subscriptions->retrieve($this->current->stripe_id)->cancel();
     }
 
     /**

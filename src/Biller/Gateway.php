@@ -8,7 +8,7 @@ class Gateway
      * Initializer
      *
      * @param \Phalcon\Config $config Phalcon config
-     * @return void
+     * @return bool
      */
     public static function me(\Phalcon\Config $config)
     {
