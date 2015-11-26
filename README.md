@@ -1,7 +1,7 @@
 # Biller (for phalconphp)
 
 ## Introduction
-Biller is a billing service package created for abstraction of [Subscriptions](hhttps://stripe.com/docs/api#subscriptions), [Charges](https://stripe.com/docs/api#intro) and [Customers](https://stripe.com/docs/api#customers) using [Stripe API](https://stripe.com/docs/api#intro) under [PhalconPHP Framework](https://phalconphp.com), inspired by [Laravel Cashier](https://github.com/laravel/cashier), so let's rock and roll...
+Biller is a billing service package created for abstraction of [Subscriptions](https://stripe.com/docs/api#subscriptions), [Charges](https://stripe.com/docs/api#intro) and [Customers](https://stripe.com/docs/api#customers) using [Stripe API](https://stripe.com/docs/api#intro) under [PhalconPHP Framework](https://phalconphp.com), inspired by [Laravel Cashier](https://github.com/laravel/cashier), so let's rock and roll...
 
 ## Installation
 The recommended way to install Biller is through Composer.
