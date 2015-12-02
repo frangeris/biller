@@ -21,8 +21,7 @@ before_script:
   - composer install --prefer-source --no-interaction --dev
   - mysql -e 'CREATE DATABASE biller_tests charset=utf8mb4 collate=utf8mb4_unicode_ci;'
   - mkdir .phalcon
-  - mv vendor/bin/phalcon.php ./phalcon
-  - ./phalcon migration --action=run --migrations=migrations --config=tests/config.php
+  - vendor/bin/phalcon migration --action=run --migrations=migrations --config=tests/config.php
 
 script:
   - vendor/bin/phpunit
