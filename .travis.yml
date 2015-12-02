@@ -1,22 +1,23 @@
 language: php
 
 php:
-  - 5.5
   - 5.6
 
+install:
+  - composer self-update
+  - git clone -q --depth=1 https://github.com/phalcon/cphalcon.git -b phalcon-v${PHALCON_VERSION}
+  - (cd cphalcon/ext; export CFLAGS="-g3 -O1 -fno-delete-null-pointer-checks -Wall"; phpize &> /dev/null && ./configure --silent --enable-phalcon &> /dev/null && make --silent -j4 > /dev/null && make --silent install && phpenv config-add ../unit-tests/ci/phalcon.ini &> /dev/null)
+  - php -r 'echo \Phalcon\Version::get()."\n";'
+  - travis_retry composer install --prefer-source --no-interaction
+
 before_script:
-  - git clone -q https://github.com/phalcon/cphalcon.git
-  - cd cphalcon/build; sudo ./install
+  - mysql -e 'CREATE DATABASE biller_tests charset=utf8mb4 collate=utf8mb4_unicode_ci;'
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: phpunit
-
-matrix:
-  allow_failures:
-    - php: 5.4
-  fast_finish: true
+script:
+  - vendor/bin/phpunit
 
 notifications:
-    on_success: never
-    on_failure: always
+  on_success: never
+  on_failure: always

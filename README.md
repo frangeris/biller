@@ -1,6 +1,11 @@
 # Biller (for phalconphp)
 
 [![Build Status](https://travis-ci.org/frangeris/biller.svg?branch=master)](https://travis-ci.org/frangeris/biller)
+[![Total Downloads](https://poser.pugx.org/frangeris/biller/downloads)](https://packagist.org/packages/frangeris/biller)
+[![Latest Stable Version](https://poser.pugx.org/frangeris/biller/v/stable)](https://packagist.org/packages/frangeris/biller)
+[![Latest Unstable Version](https://poser.pugx.org/frangeris/biller/v/unstable)](https://packagist.org/packages/frangeris/biller)
+[![License](https://poser.pugx.org/frangeris/biller/license)](https://packagist.org/packages/frangeris/biller)
+
 
 ## Introduction
 Biller is a billing service package created for abstraction of [Subscriptions](https://stripe.com/docs/api#subscriptions), [Charges](https://stripe.com/docs/api#intro) and [Customers](https://stripe.com/docs/api#customers) using [Stripe API](https://stripe.com/docs/api#intro) under [PhalconPHP Framework](https://phalconphp.com), inspired by [Laravel Cashier](https://github.com/laravel/cashier), so let's rock and roll...
