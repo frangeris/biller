@@ -3,6 +3,12 @@ language: php
 php:
   - 5.6
 
+env:
+  global:
+    - TEST_HOST=127.0.0.1
+  matrix:
+    - PHALCON_VERSION="2.0.9"
+
 install:
   - composer self-update
   - git clone -q --depth=1 https://github.com/phalcon/cphalcon.git -b phalcon-v${PHALCON_VERSION}
