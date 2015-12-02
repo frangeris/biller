@@ -2,7 +2,7 @@
 
 namespace Tests\Biller\Behavior;
 
-use Tests\TestCase;
+use Tests\Biller\TestCase;
 
 class IsCustomerTest extends TestCase
 {

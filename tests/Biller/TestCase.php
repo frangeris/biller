@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Biller;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -12,13 +12,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     public function setup()
     {
-        static::$config = new \Phalcon\Config([
-            'biller' => [
-                'key' => self::API_KEY,
-                'custom_id' => 'id', // primary key of your user table, default 'id'
-                'custom_email' => 'email', // email field to use for customers, default 'email'
-            ],
-        ]);
+        static::$config = require __DIR__.'/../config.php';
+
+        // append biller conf
+        static::$config['biller'] = [
+            'key' => self::API_KEY,
+            'custom_id' => 'id',
+            'custom_email' => 'email',
+        ];
 
         $di = new \Phalcon\DI\FactoryDefault();
         $di->set('config', static::$config);
@@ -28,7 +29,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'host' => '127.0.0.1',
                 'username' => 'root',
                 'password' => '',
-                'dbname' => 'biller_db',
+                'dbname' => 'biller_tests',
                 'charset' => 'utf8',
             ));
         });

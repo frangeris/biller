@@ -2,7 +2,7 @@
 
 namespace Tests\Biller;
 
-use Tests\TestCase;
+use Tests\Biller\TestCase;
 
 class GatewayTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 namespace Tests\Biller\Handler;
 
-use Tests\TestCase;
+use Tests\Biller\TestCase;
 
 class SubscriptionTest extends TestCase
 {
